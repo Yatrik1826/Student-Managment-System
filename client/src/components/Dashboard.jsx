@@ -1,4 +1,5 @@
 import { useAuth } from '../contexts/AuthContext';
+import StudentList from './StudentList';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -12,23 +13,45 @@ const Dashboard = () => {
           <button onClick={logout}>Logout</button>
         </div>
       </header>
-      
+
       <main>
         <h2>Dashboard</h2>
         <p>You are logged in as a {user.role}.</p>
-        
-        {/* We'll add role-specific content here in next parts */}
+
         {user.role === 'faculty' && (
-          <div>
-            <h3>Faculty Panel</h3>
-            <p>Manage your assigned students here.</p>
+          <div className="faculty-section">
+            <StudentList />
           </div>
         )}
-        
+
         {user.role === 'student' && (
-          <div>
+          <div className="student-section">
             <h3>Student Panel</h3>
-            <p>View your profile and marksheet here.</p>
+            <div className="student-info">
+              <h4>Your Information</h4>
+              <p><strong>Student ID:</strong> {user.studentId}</p>
+              <p><strong>Email:</strong> {user.email}</p>
+              <p><strong>Department:</strong> {user.department}</p>
+              <p><strong>Course:</strong> {user.course}</p>
+              <p><strong>Semester:</strong> {user.year}</p>
+              <p><strong>Section:</strong> {user.section}</p>
+              <p><strong>Phone:</strong> {user.phone || 'Not provided'}</p>
+              <p><strong>Faculty:</strong> {user.assignedFaculty?.fullName || 'Not assigned'}</p>
+            </div>
+
+            <div className="student-actions">
+              <h4>Actions</h4>
+              <button className="marksheet-btn">
+                {user.marksheet ? 'Download Marksheet' : 'No marksheet uploaded'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {user.role === 'principal' && (
+          <div className="principal-section">
+            <h3>Principal Panel</h3>
+            <p>Principal dashboard features coming soon...</p>
           </div>
         )}
       </main>

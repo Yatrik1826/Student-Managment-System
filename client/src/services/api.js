@@ -26,4 +26,20 @@ api.interceptors.response.use(
   }
 );
 
+// Student API functions
+export const studentAPI = {
+  getStudents: () => api.get('/students'),
+  getStudent: (id) => api.get(`/students/${id}`),
+  createStudent: (data) => api.post('/students', data),
+  updateStudent: (id, data) => api.put(`/students/${id}`, data),
+  deleteStudent: (id) => api.delete(`/students/${id}`),
+  uploadMarksheet: (id, file) => {
+    const formData = new FormData();
+    formData.append('marksheet', file);
+    return api.post(`/students/${id}/marksheet`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  }
+};
+
 export default api;
