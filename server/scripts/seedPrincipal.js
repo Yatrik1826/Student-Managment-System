@@ -6,7 +6,7 @@ const run = async () => {
     await seedUser({
       fullName: process.env.SEED_PRINCIPAL_NAME || "Principal Admin",
       email: process.env.SEED_PRINCIPAL_EMAIL || "principal@example.com",
-      password: process.env.SEED_PRINCIPAL_PASSWORD || "ChangeMe123!",
+      password: process.env.SEED_PRINCIPAL_PASSWORD || "!",
       role: "principal"
     });
   } catch (error) {
