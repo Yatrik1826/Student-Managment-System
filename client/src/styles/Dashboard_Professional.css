@@ -1,0 +1,280 @@
+@import './variables.css';
+
+/* ============================================
+   DASHBOARD STYLING
+   ============================================ */
+
+.dashboard {
+  min-height: 100vh;
+  background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  box-shadow: var(--shadow-lg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: white;
+}
+
+.subtitle {
+  margin: var(--spacing-sm) 0 0 0;
+  font-size: var(--text-sm);
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.user-role {
+  background: rgba(255, 255, 255, 0.2);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logout-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  transition: all var(--transition-base);
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+}
+
+.dashboard-main {
+  flex: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+}
+
+/* ============================================
+   FACULTY SECTION
+   ============================================ */
+
+.faculty-section {
+  width: 100%;
+}
+
+.faculty-section h2 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--spacing-2xl);
+  color: var(--text-primary);
+}
+
+/* ============================================
+   STUDENT SECTION
+   ============================================ */
+
+.student-section {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+  .student-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+.student-profile-card,
+.marksheet-card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  transition: all var(--transition-base);
+}
+
+.student-profile-card:hover,
+.marksheet-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.student-profile-card h2,
+.marksheet-card h2 {
+  margin: 0 0 var(--spacing-lg) 0;
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 2px solid var(--primary);
+  color: var(--text-primary);
+  font-size: var(--text-xl);
+}
+
+.profile-info {
+  background: var(--bg-tertiary);
+  padding: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0;
+}
+
+@media (max-width: 768px) {
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.info-item {
+  padding: var(--spacing-lg);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transition: all var(--transition-base);
+}
+
+.info-item:hover {
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.info-item:last-child {
+  border-right: none;
+}
+
+.info-item label {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: 0.5px;
+}
+
+.info-item p {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+}
+
+.marksheet-info {
+  background: linear-gradient(135deg, var(--info-light) 0%, #dbeafe 100%);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--info);
+}
+
+.marksheet-info p {
+  margin: var(--spacing-sm) 0;
+  color: var(--info-dark);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+}
+
+.download-marksheet-btn {
+  background: linear-gradient(135deg, var(--info) 0%, var(--primary) 100%);
+  color: white;
+  border: none;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  margin-top: var(--spacing-lg);
+  width: 100%;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md);
+}
+
+.download-marksheet-btn:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+  .dashboard-main {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .logout-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-main {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+
+  .student-section {
+    grid-template-columns: 1fr;
+  }
+}

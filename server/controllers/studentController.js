@@ -9,7 +9,7 @@ const { validateStudentPayload } = require("../utils/studentValidation");
 
 const studentLookup = (facultyId, studentId) => ({
   _id: studentId,
-  role: "student",
+  role: "student", // Role is correct
   assignedFaculty: facultyId
 });
 
@@ -20,7 +20,7 @@ const getOwnedStudent = async (facultyId, studentId) => {
 
   const student = await User.findOne(studentLookup(facultyId, studentId)).populate(
     "assignedFaculty",
-    "fullName email"
+    "name email"
   );
 
   if (!student) {
@@ -33,22 +33,22 @@ const getOwnedStudent = async (facultyId, studentId) => {
 const ensureUniqueStudentFields = async (updates, currentStudentId = null) => {
   const conflictQuery = [];
 
-  if (updates.email) {
+  if (updates.email) { // Email uniqueness check is correct
     conflictQuery.push({ email: updates.email });
   }
 
-  if (updates.studentId) {
-    conflictQuery.push({ studentId: updates.studentId });
+  if (updates.rollNumber) { // Changed from studentId
+    conflictQuery.push({ rollNumber: updates.rollNumber }); // Changed from studentId
   }
 
   if (conflictQuery.length === 0) {
     return;
   }
 
-  const existingUser = await User.findOne({
+  const existingUser = await User.findOne({ // Find existing user for conflict check
     $or: conflictQuery,
     ...(currentStudentId ? { _id: { $ne: currentStudentId } } : {})
-  }).select("email studentId");
+  }).select("email rollNumber"); // Changed from studentId
 
   if (!existingUser) {
     return;
@@ -58,8 +58,8 @@ const ensureUniqueStudentFields = async (updates, currentStudentId = null) => {
     throw new ApiError(409, "A user with that email already exists.");
   }
 
-  if (updates.studentId && existingUser.studentId === updates.studentId) {
-    throw new ApiError(409, "A student with that student ID already exists.");
+  if (updates.rollNumber && existingUser.rollNumber === updates.rollNumber) { // Changed from studentId
+    throw new ApiError(409, "A student with that roll number already exists."); // Changed from student ID
   }
 };
 
@@ -68,7 +68,7 @@ const listStudents = asyncHandler(async (req, res) => {
     role: "student",
     assignedFaculty: req.user._id
   })
-    .populate("assignedFaculty", "fullName email")
+    .populate("assignedFaculty", "name email") // Changed from fullName
     .sort({ createdAt: -1 });
 
   res.status(200).json({
@@ -95,7 +95,7 @@ const createStudent = asyncHandler(async (req, res) => {
     assignedFaculty: req.user._id
   });
 
-  await student.populate("assignedFaculty", "fullName email");
+  await student.populate("assignedFaculty", "name email"); // Changed from fullName
 
   res.status(201).json({
     message: "Student created successfully.",
@@ -111,7 +111,7 @@ const updateStudent = asyncHandler(async (req, res) => {
 
   Object.assign(student, updates);
   await student.save();
-  await student.populate("assignedFaculty", "fullName email");
+  await student.populate("assignedFaculty", "name email"); // Changed from fullName
 
   res.status(200).json({
     message: "Student updated successfully.",
@@ -148,7 +148,7 @@ const uploadMarksheet = asyncHandler(async (req, res) => {
     };
 
     await student.save();
-    await student.populate("assignedFaculty", "fullName email");
+    await student.populate("assignedFaculty", "name email"); // Changed from fullName
     await deleteFileIfExists(previousMarksheetPath);
 
     res.status(200).json({

@@ -42,4 +42,12 @@ export const studentAPI = {
   }
 };
 
+// User API functions
+export const userAPI = {
+  getProfile: () => api.get('/me'),
+  downloadMarksheet: () => api.get('/me/marksheet', {
+    responseType: 'blob'
+  })
+};
+
 export default api;

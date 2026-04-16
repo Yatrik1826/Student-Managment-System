@@ -21,21 +21,18 @@ const validateStudentPayload = (payload, { isUpdate = false } = {}) => {
   const updates = {};
   const errors = {};
 
-  const fullName = sanitizeString(payload.fullName);
+  const name = sanitizeString(payload.name); // Changed from fullName
   const email = sanitizeString(payload.email)?.toLowerCase();
   const password = typeof payload.password === "string" ? payload.password.trim() : undefined;
-  const studentId = sanitizeString(payload.studentId);
+  const rollNumber = sanitizeString(payload.rollNumber); // Changed from studentId
   const department = sanitizeString(payload.department);
-  const course = sanitizeString(payload.course);
-  const section = sanitizeString(payload.section);
-  const phone = sanitizeString(payload.phone);
-  const rawSem = payload.sem;
+  const rawYearOfStudy = payload.yearOfStudy; // Changed from year
 
-  if (!isUpdate || payload.fullName !== undefined) {
-    if (!fullName) {
-      errors.fullName = "Full name is required.";
+  if (!isUpdate || payload.name !== undefined) {
+    if (!name) {
+      errors.name = "Full name is required."; // Changed from fullName
     } else {
-      updates.fullName = fullName;
+      updates.name = name;
     }
   }
 
@@ -61,13 +58,13 @@ const validateStudentPayload = (payload, { isUpdate = false } = {}) => {
     }
   }
 
-  if (!isUpdate || payload.studentId !== undefined) {
-    if (!studentId) {
-      errors.studentId = "Student ID is required.";
-    } else if (studentId.length < 3) {
-      errors.studentId = "Student ID must be at least 3 characters long.";
+  if (!isUpdate || payload.rollNumber !== undefined) {
+    if (!rollNumber) {
+      errors.rollNumber = "Roll number is required."; // Changed from studentId
+    } else if (rollNumber.length < 3) {
+      errors.rollNumber = "Roll number must be at least 3 characters long."; // Changed from studentId
     } else {
-      updates.studentId = studentId;
+      updates.rollNumber = rollNumber; // Changed from studentId
     }
   }
 
@@ -79,42 +76,14 @@ const validateStudentPayload = (payload, { isUpdate = false } = {}) => {
     }
   }
 
-  if (!isUpdate || payload.course !== undefined) {
-    if (!course) {
-      errors.course = "Course is required.";
-    } else {
-      updates.course = course;
-    }
-  }
+  if (!isUpdate || payload.yearOfStudy !== undefined) {
+    const yearOfStudy = Number(rawYearOfStudy); // Changed from year
 
-  if (!isUpdate || payload.sem !== undefined) {
-    const sem = Number(rawSem);
-
-    if (!Number.isInteger(sem) || sem < 1 || sem > 8) {
-      errors.sem = "Semester must be a whole number between 1 and 8.";
+    if (!Number.isInteger(yearOfStudy) || yearOfStudy < 1 || yearOfStudy > 4) {
+      errors.yearOfStudy = "Year of study must be a whole number between 1 and 4."; // Changed from year
     } else {
-      updates.sem = sem;
+      updates.yearOfStudy = yearOfStudy; // Changed from year
     }
-  }
-
-  if (payload.section !== undefined) {
-    if (section && section.length > 30) {
-      errors.section = "Section must be 30 characters or fewer.";
-    } else {
-      updates.section = section || "";
-    }
-  } else if (!isUpdate) {
-    updates.section = "";
-  }
-
-  if (payload.phone !== undefined) {
-    if (phone && !phonePattern.test(phone)) {
-      errors.phone = "Enter a valid phone number.";
-    } else {
-      updates.phone = phone || "";
-    }
-  } else if (!isUpdate) {
-    updates.phone = "";
   }
 
   if (Object.keys(errors).length > 0) {

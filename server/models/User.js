@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema(
   {
-    fullName: {
+    name: {
       type: String,
       required: true,
       trim: true
@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
       enum: ["student", "faculty", "principal"],
       required: true
     },
-    studentId: {
+    rollNumber: {
       type: String,
       trim: true,
       unique: true,
@@ -36,6 +36,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: ""
+    },
+    yearOfStudy: {
+      type: Number,
+      enum: [1, 2, 3, 4],
+      default: null
     },
     course: {
       type: String,
@@ -111,8 +116,8 @@ userSchema.methods.toSafeObject = function toSafeObject() {
   const assignedFaculty =
     this.assignedFaculty && typeof this.assignedFaculty === "object" && this.assignedFaculty._id
       ? {
-          id: this.assignedFaculty._id.toString(),
-          fullName: this.assignedFaculty.fullName,
+          id: this.assignedFaculty._id.toString(), // Keep id for client-side use
+          name: this.assignedFaculty.name, // Changed from fullName
           email: this.assignedFaculty.email
         }
       : this.assignedFaculty
@@ -121,7 +126,7 @@ userSchema.methods.toSafeObject = function toSafeObject() {
 
   const safeObject = {
     id: this._id.toString(),
-    fullName: this.fullName,
+    name: this.name, // Changed from fullName
     email: this.email,
     role: this.role,
     lastLoginAt: this.lastLoginAt,
@@ -130,10 +135,10 @@ userSchema.methods.toSafeObject = function toSafeObject() {
   };
 
   if (this.role === "student") {
-    safeObject.studentId = this.studentId;
+    safeObject.rollNumber = this.rollNumber; // Changed from studentId
     safeObject.department = this.department;
     safeObject.course = this.course;
-    safeObject.year= this.sem;
+    safeObject.yearOfStudy = this.yearOfStudy; // Changed from year, fixed sem to year mapping
     safeObject.section = this.section;
     safeObject.phone = this.phone;
     safeObject.assignedFaculty = assignedFaculty;

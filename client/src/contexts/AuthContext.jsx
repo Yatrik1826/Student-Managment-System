@@ -19,9 +19,10 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (email, password, role) => {
+  const login = async (email, password) => {
     try {
-      const response = await api.post('/auth/login', { email, password, role });
+      // Role is determined by the backend based on user credentials
+      const response = await api.post('/auth/login', { email, password });
       const { token, user: userData } = response.data;
       
       localStorage.setItem('token', token);

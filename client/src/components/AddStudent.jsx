@@ -1,17 +1,15 @@
 import { useState } from 'react';
 import { studentAPI } from '../services/api';
+import '../styles/AddStudent.css';
 
 const AddStudent = ({ onStudentAdded, onCancel }) => {
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
     email: '',
     password: '',
-    studentId: '',
+    rollNumber: '',
     department: '',
-    course: '',
-    sem: '',
-    section: '',
-    phone: ''
+    yearOfStudy: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -36,8 +34,8 @@ const AddStudent = ({ onStudentAdded, onCancel }) => {
   const validateForm = () => {
     const errors = {};
 
-    if (!formData.fullName.trim()) {
-      errors.fullName = 'Full name is required';
+    if (!formData.name.trim()) {
+      errors.name = 'Full name is required';
     }
 
     if (!formData.email.trim()) {
@@ -52,27 +50,18 @@ const AddStudent = ({ onStudentAdded, onCancel }) => {
       errors.password = 'Password must be at least 8 characters';
     }
 
-    if (!formData.studentId.trim()) {
-      errors.studentId = 'Student ID is required';
-    } else if (formData.studentId.length < 3) {
-      errors.studentId = 'Student ID must be at least 3 characters';
+    if (!formData.rollNumber.trim()) {
+      errors.rollNumber = 'Roll number is required';
+    } else if (formData.rollNumber.length < 3) {
+      errors.rollNumber = 'Roll number must be at least 3 characters';
     }
 
     if (!formData.department.trim()) {
       errors.department = 'Department is required';
     }
 
-    if (!formData.course.trim()) {
-      errors.course = 'Course is required';
-    }
-
-    const sem = parseInt(formData.sem);
-    if (!formData.sem || isNaN(sem) || sem < 1 || sem > 8) {
-      errors.sem = 'Semester must be a number between 1 and 8';
-    }
-
-    if (formData.phone && !/^[0-9+\-\s()]{7,20}$/.test(formData.phone)) {
-      errors.phone = 'Enter a valid phone number';
+    if (!formData.yearOfStudy) {
+      errors.yearOfStudy = 'Year of study is required';
     }
 
     setValidationErrors(errors);
@@ -90,12 +79,7 @@ const AddStudent = ({ onStudentAdded, onCancel }) => {
     setError('');
 
     try {
-      const studentData = {
-        ...formData,
-        sem: parseInt(formData.sem)
-      };
-
-      const response = await studentAPI.createStudent(studentData);
+      const response = await studentAPI.createStudent(formData);
 
       // Call the callback to refresh the student list
       if (onStudentAdded) {
@@ -104,18 +88,16 @@ const AddStudent = ({ onStudentAdded, onCancel }) => {
 
       // Reset form
       setFormData({
-        fullName: '',
+        name: '',
         email: '',
         password: '',
-        studentId: '',
+        rollNumber: '',
         department: '',
-        course: '',
-        sem: '',
-        section: '',
-        phone: ''
+        yearOfStudy: ''
       });
 
-      alert('Student added successfully!');
+      // Close modal after successful submission
+      onCancel();
     } catch (error) {
       if (error.response?.data?.errors) {
         // Backend validation errors
@@ -129,136 +111,102 @@ const AddStudent = ({ onStudentAdded, onCancel }) => {
   };
 
   return (
-    <div className="add-student-modal">
-      <div className="modal-content">
+    <div className="modal-overlay">
+      <div className="add-student-modal">
         <div className="modal-header">
           <h3>Add New Student</h3>
           <button className="close-btn" onClick={onCancel}>×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="student-form">
-          {error && <div className="error">{error}</div>}
+          {error && <div className="form-error">{error}</div>}
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Full Name *</label>
-              <input
-                type="text"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                className={validationErrors.fullName ? 'error' : ''}
-              />
-              {validationErrors.fullName && <span className="field-error">{validationErrors.fullName}</span>}
-            </div>
-
-            <div className="form-group">
-              <label>Email *</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={validationErrors.email ? 'error' : ''}
-              />
-              {validationErrors.email && <span className="field-error">{validationErrors.email}</span>}
-            </div>
+          <div className="form-group">
+            <label htmlFor="name">Full Name *</label>
+            <input
+              id="name"
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter student's full name"
+              className={validationErrors.name ? 'input-error' : ''}
+            />
+            {validationErrors.name && <span className="field-error">{validationErrors.name}</span>}
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Password *</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className={validationErrors.password ? 'error' : ''}
-              />
-              {validationErrors.password && <span className="field-error">{validationErrors.password}</span>}
-            </div>
-
-            <div className="form-group">
-              <label>Student ID *</label>
-              <input
-                type="text"
-                name="studentId"
-                value={formData.studentId}
-                onChange={handleChange}
-                className={validationErrors.studentId ? 'error' : ''}
-              />
-              {validationErrors.studentId && <span className="field-error">{validationErrors.studentId}</span>}
-            </div>
+          <div className="form-group">
+            <label htmlFor="email">Email *</label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter email address"
+              className={validationErrors.email ? 'input-error' : ''}
+            />
+            {validationErrors.email && <span className="field-error">{validationErrors.email}</span>}
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Department *</label>
-              <input
-                type="text"
-                name="department"
-                value={formData.department}
-                onChange={handleChange}
-                className={validationErrors.department ? 'error' : ''}
-              />
-              {validationErrors.department && <span className="field-error">{validationErrors.department}</span>}
-            </div>
-
-            <div className="form-group">
-              <label>Course *</label>
-              <input
-                type="text"
-                name="course"
-                value={formData.course}
-                onChange={handleChange}
-                className={validationErrors.course ? 'error' : ''}
-              />
-              {validationErrors.course && <span className="field-error">{validationErrors.course}</span>}
-            </div>
+          <div className="form-group">
+            <label htmlFor="password">Password *</label>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Minimum 8 characters"
+              className={validationErrors.password ? 'input-error' : ''}
+            />
+            {validationErrors.password && <span className="field-error">{validationErrors.password}</span>}
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Semester *</label>
-              <select
-                name="sem"
-                value={formData.sem}
-                onChange={handleChange}
-                className={validationErrors.sem ? 'error' : ''}
-              >
-                <option value="">Select Semester</option>
-                {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
-                  <option key={sem} value={sem}>{sem}</option>
-                ))}
-              </select>
-              {validationErrors.sem && <span className="field-error">{validationErrors.sem}</span>}
-            </div>
-
-            <div className="form-group">
-              <label>Section</label>
-              <input
-                type="text"
-                name="section"
-                value={formData.section}
-                onChange={handleChange}
-                placeholder="e.g., A, B, C"
-              />
-            </div>
+          <div className="form-group">
+            <label htmlFor="rollNumber">Roll Number *</label>
+            <input
+              id="rollNumber"
+              type="text"
+              name="rollNumber"
+              value={formData.rollNumber}
+              onChange={handleChange}
+              placeholder="e.g., 2024CS001"
+              className={validationErrors.rollNumber ? 'input-error' : ''}
+            />
+            {validationErrors.rollNumber && <span className="field-error">{validationErrors.rollNumber}</span>}
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Phone</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="e.g., +1-234-567-8900"
-                className={validationErrors.phone ? 'error' : ''}
-              />
-              {validationErrors.phone && <span className="field-error">{validationErrors.phone}</span>}
-            </div>
+          <div className="form-group">
+            <label htmlFor="department">Department *</label>
+            <input
+              id="department"
+              type="text"
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+              placeholder="e.g., Computer Science"
+              className={validationErrors.department ? 'input-error' : ''}
+            />
+            {validationErrors.department && <span className="field-error">{validationErrors.department}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="yearOfStudy">Year of Study *</label>
+            <select
+              id="yearOfStudy"
+              name="yearOfStudy"
+              value={formData.yearOfStudy}
+              onChange={handleChange}
+              className={validationErrors.yearOfStudy ? 'input-error' : ''}
+            >
+              <option value="">Select Year</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">4th Year</option>
+            </select>
+            {validationErrors.yearOfStudy && <span className="field-error">{validationErrors.yearOfStudy}</span>}
           </div>
 
           <div className="form-actions">

@@ -5,16 +5,16 @@ import { useAuth } from '../contexts/AuthContext';
 const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
-    role: ''
+    password: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, user } = useAuth(); // Assuming user object with role is available
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthenticated) {
+      // Navigate to dashboard for all authenticated users
       navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
@@ -24,9 +24,11 @@ const Login = () => {
     setLoading(true);
     setError('');
 
-    const result = await login(formData.email, formData.password, formData.role);
+    // Role is determined from database, not from user input
+    const result = await login(formData.email, formData.password);
     
     if (result.success) {
+      // Navigate to dashboard after successful login
       navigate('/dashboard');
     } else {
       setError(result.error);
@@ -43,46 +45,48 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
+      <div className="login-box">
+        <h1>Student Management Portal</h1>
+        <h2>Login</h2>
         
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        
-        <div>
-          <label>Role:</label>
-          <select name="role" value={formData.role} onChange={handleChange} required>
-            <option value="">Select Role</option>
-            <option value="student">Student</option>
-            <option value="faculty">Faculty</option>
-            <option value="principal">Principal</option>
-          </select>
-        </div>
-        
-        {error && <div className="error">{error}</div>}
-        
-        <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="email">Email Address</label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          
+          {error && <div className="error-message">{error}</div>}
+          
+          <button type="submit" disabled={loading} className="login-button">
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+        </form>
+
+        <p className="login-note">
+          Your role (Student or Faculty) will be determined based on your account credentials.
+        </p>
+      </div>
     </div>
   );
 };

@@ -1,0 +1,186 @@
+@import './variables.css';
+
+/* ============================================
+   STUDENT PROFILE MODAL
+   ============================================ */
+
+.student-profile {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2xl);
+  overflow: hidden;
+  max-width: 700px;
+  animation: modalSlideIn var(--transition-slow) cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  border-bottom: none;
+}
+
+.profile-header h3 {
+  margin: 0;
+  color: white;
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  font-size: var(--text-2xl);
+  cursor: pointer;
+  color: white;
+  padding: var(--spacing-sm);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.profile-content {
+  padding: var(--spacing-2xl);
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+.profile-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.profile-section:last-child {
+  margin-bottom: 0;
+}
+
+.profile-section h4 {
+  color: var(--primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--primary);
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+  .profile-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-item {
+  padding: var(--spacing-lg);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--primary);
+  transition: all var(--transition-base);
+}
+
+.profile-item:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.profile-item label {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: 0.5px;
+}
+
+.profile-item p {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+}
+
+.marksheet-info {
+  background: linear-gradient(135deg, var(--info-light) 0%, #dbeafe 100%);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--info);
+}
+
+.marksheet-info p {
+  margin: var(--spacing-sm) 0;
+  color: var(--info-dark);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+}
+
+.profile-loading,
+.profile-error {
+  padding: var(--spacing-2xl);
+  text-align: center;
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+}
+
+.profile-error {
+  color: var(--danger-dark);
+  background: var(--danger-light);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--danger);
+  animation: slideDown var(--transition-base) ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-loading {
+  animation: pulse var(--transition-slow) ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}

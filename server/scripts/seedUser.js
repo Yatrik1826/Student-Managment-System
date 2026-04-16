@@ -7,7 +7,7 @@ const seedUser = async ({ fullName, email, password, role }) => {
   const existingUser = await User.findOne({ email: email.toLowerCase().trim() }).select("+password");
 
   if (existingUser) {
-    existingUser.fullName = fullName;
+    existingUser.name = fullName;
     existingUser.role = role;
     existingUser.password = password;
     await existingUser.save();
@@ -16,7 +16,7 @@ const seedUser = async ({ fullName, email, password, role }) => {
   }
 
   await User.create({
-    fullName,
+    name: fullName,
     email,
     password,
     role
