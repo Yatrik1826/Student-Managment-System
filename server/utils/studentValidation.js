@@ -29,7 +29,7 @@ const validateStudentPayload = (payload, { isUpdate = false } = {}) => {
   const course = sanitizeString(payload.course);
   const section = sanitizeString(payload.section);
   const phone = sanitizeString(payload.phone);
-  const rawyear= payload.sem;
+  const rawSem = payload.sem;
 
   if (!isUpdate || payload.fullName !== undefined) {
     if (!fullName) {
@@ -87,13 +87,13 @@ const validateStudentPayload = (payload, { isUpdate = false } = {}) => {
     }
   }
 
-  if (!isUpdate || payload.year!== undefined) {
-    const year= Number(rawsem);
+  if (!isUpdate || payload.sem !== undefined) {
+    const sem = Number(rawSem);
 
-    if (!Number.isInteger(sem) || year< 1 || year> 8) {
-      errors.year= "yearmust be a whole number between 1 and 8.";
+    if (!Number.isInteger(sem) || sem < 1 || sem > 8) {
+      errors.sem = "Semester must be a whole number between 1 and 8.";
     } else {
-      updates.year= sem;
+      updates.sem = sem;
     }
   }
 

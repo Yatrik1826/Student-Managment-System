@@ -1,10 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { studentAPI } from '../services/api';
+import AddStudent from './AddStudent';
+import EditStudent from './EditStudent';
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [studentToEdit, setStudentToEdit] = useState(null);
+  const [uploadStudentId, setUploadStudentId] = useState(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     fetchStudents();
@@ -35,6 +42,49 @@ const StudentList = () => {
     }
   };
 
+  const handleStudentAdded = (newStudent) => {
+    setStudents(prevStudents => [...prevStudents, newStudent]);
+    setShowAddModal(false);
+  };
+
+  const openEditModal = (student) => {
+    setStudentToEdit(student);
+    setShowEditModal(true);
+  };
+
+  const handleStudentUpdated = (updatedStudent) => {
+    setStudents(prevStudents => prevStudents.map(student =>
+      student.id === updatedStudent.id ? updatedStudent : student
+    ));
+    setShowEditModal(false);
+    setStudentToEdit(null);
+  };
+
+  const handleUploadClick = (studentId) => {
+    setUploadStudentId(studentId);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null;
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !uploadStudentId) {
+      return;
+    }
+
+    try {
+      await studentAPI.uploadMarksheet(uploadStudentId, file);
+      alert('Marksheet uploaded successfully!');
+      fetchStudents();
+    } catch (error) {
+      setError(error.response?.data?.message || 'Failed to upload marksheet');
+    } finally {
+      setUploadStudentId(null);
+    }
+  };
+
   if (loading) {
     return <div>Loading students...</div>;
   }
@@ -47,7 +97,9 @@ const StudentList = () => {
     <div className="student-list">
       <div className="list-header">
         <h3>My Students ({students.length})</h3>
-        <button className="add-btn">Add New Student</button>
+        <button className="add-btn" onClick={() => setShowAddModal(true)}>
+          Add New Student
+        </button>
       </div>
 
       {students.length === 0 ? (
@@ -74,17 +126,45 @@ const StudentList = () => {
               </div>
 
               <div className="student-actions">
-                <button className="edit-btn">Edit</button>
+                <button className="edit-btn" onClick={() => openEditModal(student)}>
+                  Edit
+                </button>
                 <button className="delete-btn" onClick={() => handleDelete(student.id, student.fullName)}>
                   Delete
                 </button>
-                <button className="marksheet-btn">
+                <button className="marksheet-btn" onClick={() => handleUploadClick(student.id)}>
                   {student.marksheet ? 'Update Marksheet' : 'Upload Marksheet'}
                 </button>
               </div>
             </div>
           ))}
         </div>
+      )}
+
+      <input
+        type="file"
+        accept="application/pdf,image/jpeg,image/png,image/webp"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
+      />
+
+      {showAddModal && (
+        <AddStudent
+          onStudentAdded={handleStudentAdded}
+          onCancel={() => setShowAddModal(false)}
+        />
+      )}
+
+      {showEditModal && studentToEdit && (
+        <EditStudent
+          student={studentToEdit}
+          onStudentUpdated={handleStudentUpdated}
+          onCancel={() => {
+            setShowEditModal(false);
+            setStudentToEdit(null);
+          }}
+        />
       )}
     </div>
   );
