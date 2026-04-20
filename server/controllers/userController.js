@@ -6,7 +6,7 @@ const { resolveStoredFilePath } = require("../utils/fileStorage");
 
 const getMe = asyncHandler(async (req, res) => {
   if (req.user.role === "student") {
-    await req.user.populate("assignedFaculty", "fullName email");
+    await req.user.populate("assignedFaculty", "name email");
   }
 
   res.status(200).json({

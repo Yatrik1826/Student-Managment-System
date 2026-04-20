@@ -26,7 +26,7 @@ const protect = asyncHandler(async (req, res, next) => {
     throw new ApiError(401, "Invalid or expired token.");
   }
 
-  const user = await User.findById(payload.sub);
+  const user = await User.findAnyById(payload.sub);
 
   if (!user) {
     throw new ApiError(401, "Authentication required.");

@@ -18,7 +18,7 @@ const getOwnedStudent = async (facultyId, studentId) => {
     throw new ApiError(404, "Student not found.");
   }
 
-  const student = await User.findOne(studentLookup(facultyId, studentId)).populate(
+  const student = await User.Student.findOne(studentLookup(facultyId, studentId)).populate(
     "assignedFaculty",
     "name email"
   );
@@ -45,10 +45,10 @@ const ensureUniqueStudentFields = async (updates, currentStudentId = null) => {
     return;
   }
 
-  const existingUser = await User.findOne({ // Find existing user for conflict check
+  const existingUser = await User.findAnyOne({ // Find existing user for conflict check
     $or: conflictQuery,
     ...(currentStudentId ? { _id: { $ne: currentStudentId } } : {})
-  }).select("email rollNumber"); // Changed from studentId
+  });
 
   if (!existingUser) {
     return;
@@ -64,11 +64,10 @@ const ensureUniqueStudentFields = async (updates, currentStudentId = null) => {
 };
 
 const listStudents = asyncHandler(async (req, res) => {
-  const students = await User.find({
-    role: "student",
+  const students = await User.Student.find({
     assignedFaculty: req.user._id
   })
-    .populate("assignedFaculty", "name email") // Changed from fullName
+    .populate("assignedFaculty", "name email")
     .sort({ createdAt: -1 });
 
   res.status(200).json({
@@ -89,13 +88,13 @@ const createStudent = asyncHandler(async (req, res) => {
 
   await ensureUniqueStudentFields(studentData);
 
-  const student = await User.create({
+  const student = await User.Student.create({
     ...studentData,
     role: "student",
     assignedFaculty: req.user._id
   });
 
-  await student.populate("assignedFaculty", "name email"); // Changed from fullName
+  await student.populate("assignedFaculty", "name email");
 
   res.status(201).json({
     message: "Student created successfully.",
@@ -169,3 +168,5 @@ module.exports = {
   deleteStudent,
   uploadMarksheet
 };
+
+

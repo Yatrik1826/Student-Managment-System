@@ -63,7 +63,7 @@ const userSchema = new mongoose.Schema(
     },
     assignedFaculty: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Faculty",
       default: null
     },
     marksheet: {
@@ -116,8 +116,8 @@ userSchema.methods.toSafeObject = function toSafeObject() {
   const assignedFaculty =
     this.assignedFaculty && typeof this.assignedFaculty === "object" && this.assignedFaculty._id
       ? {
-          id: this.assignedFaculty._id.toString(), // Keep id for client-side use
-          name: this.assignedFaculty.name, // Changed from fullName
+          id: this.assignedFaculty._id.toString(),
+          name: this.assignedFaculty.name,
           email: this.assignedFaculty.email
         }
       : this.assignedFaculty
@@ -126,7 +126,7 @@ userSchema.methods.toSafeObject = function toSafeObject() {
 
   const safeObject = {
     id: this._id.toString(),
-    name: this.name, // Changed from fullName
+    name: this.name,
     email: this.email,
     role: this.role,
     lastLoginAt: this.lastLoginAt,
@@ -135,10 +135,10 @@ userSchema.methods.toSafeObject = function toSafeObject() {
   };
 
   if (this.role === "student") {
-    safeObject.rollNumber = this.rollNumber; // Changed from studentId
+    safeObject.rollNumber = this.rollNumber;
     safeObject.department = this.department;
     safeObject.course = this.course;
-    safeObject.yearOfStudy = this.yearOfStudy; // Changed from year, fixed sem to year mapping
+    safeObject.yearOfStudy = this.yearOfStudy;
     safeObject.section = this.section;
     safeObject.phone = this.phone;
     safeObject.assignedFaculty = assignedFaculty;
@@ -155,4 +155,53 @@ userSchema.methods.toSafeObject = function toSafeObject() {
   return safeObject;
 };
 
-module.exports = mongoose.model("User", userSchema);
+userSchema.statics.findAnyById = async function findAnyById(id) {
+  const student = await this.Student.findById(id);
+  if (student) {
+    return student;
+  }
+
+  const faculty = await this.Faculty.findById(id);
+  if (faculty) {
+    return faculty;
+  }
+
+  return this.findById(id);
+};
+
+userSchema.statics.findAnyByEmail = async function findAnyByEmail(email) {
+  const student = await this.Student.findOne({ email }).select("+password");
+  if (student) {
+    return student;
+  }
+
+  const faculty = await this.Faculty.findOne({ email }).select("+password");
+  if (faculty) {
+    return faculty;
+  }
+
+  return this.findOne({ email }).select("+password");
+};
+
+userSchema.statics.findAnyOne = async function findAnyOne(filter) {
+  const student = await this.Student.findOne(filter);
+  if (student) {
+    return student;
+  }
+
+  const faculty = await this.Faculty.findOne(filter);
+  if (faculty) {
+    return faculty;
+  }
+
+  return this.findOne(filter);
+};
+
+const User = mongoose.model("User", userSchema, "users");
+const Student = mongoose.model("Student", userSchema, "students");
+const Faculty = mongoose.model("Faculty", userSchema, "faculties");
+
+User.Student = Student;
+User.Faculty = Faculty;
+
+module.exports = User;

@@ -4,7 +4,8 @@ const User = require("../models/User");
 const seedUser = async ({ fullName, email, password, role }) => {
   await connectDB();
 
-  const existingUser = await User.findOne({ email: email.toLowerCase().trim() }).select("+password");
+  const normalizedEmail = email.toLowerCase().trim();
+  const existingUser = await User.findAnyOne({ email: normalizedEmail }).select("+password");
 
   if (existingUser) {
     existingUser.name = fullName;
@@ -15,9 +16,11 @@ const seedUser = async ({ fullName, email, password, role }) => {
     return;
   }
 
-  await User.create({
+  const model = role === "faculty" ? User.Faculty : role === "student" ? User.Student : User;
+
+  await model.create({
     name: fullName,
-    email,
+    email: normalizedEmail,
     password,
     role
   });

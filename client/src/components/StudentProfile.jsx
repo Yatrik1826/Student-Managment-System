@@ -41,7 +41,7 @@ const StudentProfile = ({ studentId, facultyId, onClose }) => {
           <div className="profile-grid">
             <div className="profile-item">
               <label>Full Name:</label>
-              <p>{student.fullName}</p>
+              <p>{student.name}</p>
             </div>
             <div className="profile-item">
               <label>Email:</label>
@@ -49,7 +49,7 @@ const StudentProfile = ({ studentId, facultyId, onClose }) => {
             </div>
             <div className="profile-item">
               <label>Student ID:</label>
-              <p>{student.studentId}</p>
+              <p>{student.rollNumber}</p>
             </div>
             <div className="profile-item">
               <label>Department:</label>
@@ -57,7 +57,7 @@ const StudentProfile = ({ studentId, facultyId, onClose }) => {
             </div>
             <div className="profile-item">
               <label>Year of Study:</label>
-              <p>{student.year}</p>
+              <p>{student.yearOfStudy}</p>
             </div>
             <div className="profile-item">
               <label>Phone:</label>
@@ -83,6 +83,10 @@ const StudentProfile = ({ studentId, facultyId, onClose }) => {
             <div className="profile-item">
               <label>Role:</label>
               <p>{student.role}</p>
+            </div>
+            <div className="profile-item">
+              <label>Assigned Faculty:</label>
+              <p>{student.assignedFaculty?.name || 'Not assigned'}</p>
             </div>
             <div className="profile-item">
               <label>Account Created:</label>

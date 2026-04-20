@@ -117,6 +117,9 @@ const AddStudent = ({ onStudentAdded, onCancel }) => {
           <h3>Add New Student</h3>
           <button className="close-btn" onClick={onCancel}>×</button>
         </div>
+        <p className="form-note">
+          New students are automatically assigned to your faculty account when they are created.
+        </p>
 
         <form onSubmit={handleSubmit} className="student-form">
           {error && <div className="form-error">{error}</div>}

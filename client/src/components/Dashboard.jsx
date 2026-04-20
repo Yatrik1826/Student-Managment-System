@@ -80,7 +80,11 @@ const Dashboard = () => {
                   </div>
                   <div className="info-item">
                     <label>Year of Study</label>
-                    <p>{user.yearOfStudy}{'st4th'[user.yearOfStudy - 1] || 'th'} Year</p>
+                    <p>
+                      {user.yearOfStudy
+                        ? `${user.yearOfStudy}${['st', 'nd', 'rd', 'th'][user.yearOfStudy - 1] || 'th'} Year`
+                        : 'Not set'}
+                    </p>
                   </div>
                   <div className="info-item">
                     <label>Assigned Faculty</label>

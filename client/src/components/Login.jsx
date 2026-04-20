@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
@@ -85,6 +85,9 @@ const Login = () => {
 
         <p className="login-note">
           Your role (Student or Faculty) will be determined based on your account credentials.
+        </p>
+        <p className="login-link">
+          New here? <Link to="/register">Register as a student or faculty</Link>
         </p>
       </div>
     </div>

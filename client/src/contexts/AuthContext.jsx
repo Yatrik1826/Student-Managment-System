@@ -10,9 +10,9 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    
+    const token = sessionStorage.getItem('token');
+    const storedUser = sessionStorage.getItem('user');
+
     if (token && storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -24,14 +24,29 @@ export const AuthProvider = ({ children }) => {
       // Role is determined by the backend based on user credentials
       const response = await api.post('/auth/login', { email, password });
       const { token, user: userData } = response.data;
-      
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
+
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
-      
+
       return { success: true };
     } catch (error) {
       return { success: false, error: error.response?.data?.message || 'Login failed' };
+    }
+  };
+
+  const register = async (payload) => {
+    try {
+      const response = await api.post('/auth/register', payload);
+      const { token, user: userData } = response.data;
+
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.response?.data?.message || 'Registration failed', details: error.response?.data?.details };
     }
   };
 
@@ -41,15 +56,16 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       // Ignore logout errors
     }
-    
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
     setUser(null);
   };
 
   const value = {
     user,
     login,
+    register,
     logout,
     isAuthenticated: !!user,
     loading

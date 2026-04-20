@@ -6,7 +6,7 @@ const api = axios.create({
 
 // Add JWT token to requests
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -18,8 +18,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user');
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -40,6 +40,13 @@ export const studentAPI = {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
   }
+};
+
+// Auth API functions
+export const authAPI = {
+  login: (data) => api.post('/auth/login', data),
+  register: (data) => api.post('/auth/register', data),
+  getFaculties: () => api.get('/auth/faculties')
 };
 
 // User API functions
